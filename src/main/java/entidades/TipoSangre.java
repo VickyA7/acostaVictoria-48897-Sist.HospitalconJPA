@@ -1,4 +1,4 @@
-package entidades.enums;
+package entidades;
 
 
 public enum TipoSangre {

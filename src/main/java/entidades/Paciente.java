@@ -1,7 +1,6 @@
 package entidades;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import entidades.enums.TipoSangre;
 
 import java.io.Serializable;
 import java.time.LocalDate;

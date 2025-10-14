@@ -1,13 +1,10 @@
 package entidades;
 
-import entidades.enums.TipoSangre;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import entidades.enums.EspecialidadMedica;
-import entidades.enums.TipoSangre;
 
 import java.io.Serializable;
 import java.time.LocalDate;
