@@ -1,6 +1,6 @@
 package servicios;
-import org.jcr.Entidades.*;
-import org.jcr.Entidades.Exceptions.CitaException;
+import entidades.*;
+
 
 import java.io.IOException;
 import java.math.BigDecimal;

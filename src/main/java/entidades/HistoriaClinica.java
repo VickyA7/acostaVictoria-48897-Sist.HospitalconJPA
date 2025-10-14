@@ -1,8 +1,7 @@
 package entidades;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -11,22 +10,54 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name="HISTORIA CLINICA")
 @Getter
 @ToString(exclude = "paciente")
-@EqualsAndHashCode(exclude = "paciente")
+@NoArgsConstructor
 
 public class HistoriaClinica implements Serializable {
 
-    private final String numeroHistoria;
-    private final Paciente paciente;
-    private final LocalDateTime fechaCreacion;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "numero_historia", nullable = false, unique = true, length = 64)
+    private String numeroHistoria;
+
+    @Setter(AccessLevel.NONE)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente_id", nullable = false, unique = true)
+    private Paciente paciente;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "fecha_creacion", nullable = false)
+    private LocalDateTime fechaCreacion;
+
+    @ElementCollection
+    @CollectionTable(name = "hc_diagnostico", joinColumns = @JoinColumn(name = "historia_id"))
+    @Column(name = "diagnostico", nullable = false, length = 500)
     private final List<String> diagnosticos = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "hc_tratamiento", joinColumns = @JoinColumn(name = "historia_id"))
+    @Column(name = "tratamiento", nullable = false, length = 500)
     private final List<String> tratamientos = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "hc_alergia", joinColumns = @JoinColumn(name = "historia_id"))
+    @Column(name = "alergia", nullable = false, length = 200)
     private final List<String> alergias = new ArrayList<>();
 
-    public HistoriaClinica(Paciente paciente) {
+
+
+    //BUILDER
+    @Builder
+    protected HistoriaClinica(Paciente paciente, LocalDateTime fechaCreacion) {
         this.paciente = Objects.requireNonNull(paciente, "El paciente no puede ser nulo");
-        this.fechaCreacion = LocalDateTime.now();
+        this.fechaCreacion = (fechaCreacion != null) ? fechaCreacion : LocalDateTime.now();
         this.numeroHistoria = generarNumeroHistoria();
     }
 
@@ -63,4 +94,5 @@ public class HistoriaClinica implements Serializable {
     public List<String> getAlergias() {
         return Collections.unmodifiableList(alergias);
     }
+
 }

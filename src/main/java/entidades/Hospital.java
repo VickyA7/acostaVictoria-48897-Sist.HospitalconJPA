@@ -1,20 +1,41 @@
 package entidades;
 
+import jakarta.persistence.*;
 import lombok.*;
 import java.io.Serializable;
 import java.util.*;
 
+@Entity
+@Table(name = "HOSPITAL")
 @Getter
 @ToString(exclude = {"departamentos", "pacientes"})
-@EqualsAndHashCode(exclude = {"departamentos", "pacientes"})
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Hospital implements Serializable {
 
-    private final String nombre;
-    private final String direccion;
-    private final String telefono;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "idHosp")
+    private Long id;
 
-    private final List<Departamento> departamentos = new ArrayList<>();
-    private final List<Paciente> pacientes = new ArrayList<>();
+    @Setter(AccessLevel.NONE)
+    @Column(name="NOMBRE", nullable = false, length = 200)
+    private String nombre;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "DIRECCIÓN", nullable = false, length = 254)
+    private String direccion;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "TELÉFONO", nullable = false, length = 30)
+    private String telefono;
+
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "HOSPITAL", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Departamento> departamentos = new ArrayList<>();
+
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "HOSPITAL", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Paciente> pacientes = new ArrayList<>();
 
     @Builder
     public Hospital(String nombre, String direccion, String telefono) {
@@ -38,18 +59,22 @@ public class Hospital implements Serializable {
     }
 
     public List<Departamento> getDepartamentos() {
+
         return Collections.unmodifiableList(departamentos);
     }
 
     public List<Paciente> getPacientes() {
+
         return Collections.unmodifiableList(pacientes);
     }
 
     List<Departamento> getInternalDepartamentos() {
+
         return departamentos;
     }
 
     List<Paciente> getInternalPacientes() {
+
         return pacientes;
     }
 

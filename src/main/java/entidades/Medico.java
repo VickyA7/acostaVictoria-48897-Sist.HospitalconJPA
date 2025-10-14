@@ -1,9 +1,7 @@
 package entidades;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
@@ -13,26 +11,56 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table (name = "MEDICOS")
 @Getter
 @ToString(callSuper = true, exclude = {"departamento", "citas"})
-@EqualsAndHashCode(callSuper = true, exclude = {"departamento", "citas"})
 @SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Medico extends Persona implements Serializable {
 
-    private final Matricula matricula;
-    private final EspecialidadMedica especialidad;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Setter(AccessLevel.NONE)
+    @Embedded
+    private Matricula matricula;
+
+    @Setter(AccessLevel.NONE)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ESPECIALIDAD", nullable = false)
+    private EspecialidadMedica especialidad;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departamento_id")
     private Departamento departamento;
 
-    @Builder.Default
-    private final List<Cita> citas = new ArrayList<>();
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "MEDICO", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    private List<Cita> citas;
 
-    // Constructor manual
-    public Medico(String nombre, String apellido, String dni, LocalDate fechaNacimiento,
-                  TipoSangre tipoSangre, String numeroMatricula, EspecialidadMedica especialidad) {
-        super(nombre, apellido, dni, fechaNacimiento, tipoSangre);
-        this.matricula = new Matricula(numeroMatricula);
-        this.especialidad = Objects.requireNonNull(especialidad, "La especialidad no puede ser nula");
+
+    protected Medico(MedicoBuilder<?, ?> builder) {
+        super(builder);
+        this.matricula = new Matricula(builder.numeroMatricula);
+        this.especialidad = Objects.requireNonNull(builder.especialidad, "La especialidad no puede ser nula");
         this.citas = new ArrayList<>();
+    }
+
+    public static abstract class MedicoBuilder<C extends Medico, B extends MedicoBuilder<C, B>> extends PersonaBuilder<C, B> {
+        private String numeroMatricula;
+        private EspecialidadMedica especialidad;
+
+        public B numeroMatricula(String numeroMatricula) {
+            this.numeroMatricula = numeroMatricula;
+            return self();
+        }
+
+        public B especialidad(EspecialidadMedica especialidad) {
+            this.especialidad = especialidad;
+            return self();
+        }
     }
 
     public void setDepartamento(Departamento departamento) {
@@ -42,12 +70,11 @@ public class Medico extends Persona implements Serializable {
     }
 
     public void addCita(Cita cita) {
-        if (cita != null && !citas.contains(cita)) {
-            this.citas.add(cita);
-        }
+        this.citas.add(cita);
     }
 
     public List<Cita> getCitas() {
         return Collections.unmodifiableList(new ArrayList<>(citas));
     }
+
 }

@@ -1,6 +1,9 @@
 package entidades;
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import java.io.Serializable;
@@ -10,21 +13,46 @@ import java.util.Objects;
 @Getter
 @ToString
 @SuperBuilder
-
+@MappedSuperclass
 public abstract class Persona implements Serializable {
 
-    protected final String nombre;
-    protected final String apellido;
-    protected final String dni;
-    protected final LocalDate fechaNacimiento;
-    protected final TipoSangre tipoSangre;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    protected Long id;
 
-    public Persona(String nombre, String apellido, String dni, LocalDate fechaNacimiento, TipoSangre tipoSangre) {
-        this.nombre = validarString(nombre, "El nombre no puede ser nulo ni vacío");
-        this.apellido = validarString(apellido, "El apellido no puede ser nulo ni vacío");
-        this.dni = validarDni(dni);
-        this.fechaNacimiento = Objects.requireNonNull(fechaNacimiento, "La fecha de nacimiento no puede ser nula");
-        this.tipoSangre = Objects.requireNonNull(tipoSangre, "El tipo de sangre no puede ser nulo");
+    @Setter(AccessLevel.NONE)
+    @Column(name = "nombre", nullable = false, length = 100)
+    protected String nombre;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "apellido", nullable = false, length = 100)
+    protected String apellido;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "dni", nullable = false, unique = true, length = 8)
+    protected String dni;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "fecha_nacimiento", nullable = false)
+    protected LocalDate fechaNacimiento;
+
+    @Setter(AccessLevel.NONE)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_sangre", nullable = false)
+    protected TipoSangre tipoSangre;
+
+    // Constructor protegido sin parámetros para JPA
+    protected Persona() {
+        // Constructor vacío para JPA
+    }
+
+    protected Persona(PersonaBuilder<?, ?> builder) {
+        this.nombre = validarString(builder.nombre, "El nombre no puede ser nulo ni vacío");
+        this.apellido = validarString(builder.apellido, "El apellido no puede ser nulo ni vacío");
+        this.dni = validarDni(builder.dni);
+        this.fechaNacimiento = Objects.requireNonNull(builder.fechaNacimiento, "La fecha de nacimiento no puede ser nula");
+        this.tipoSangre = Objects.requireNonNull(builder.tipoSangre, "El tipo de sangre no puede ser nulo");
     }
 
     public String getNombreCompleto() {
@@ -50,4 +78,5 @@ public abstract class Persona implements Serializable {
         }
         return dni;
     }
+
 }

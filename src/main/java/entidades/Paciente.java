@@ -1,4 +1,5 @@
 package entidades;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -6,26 +7,62 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
+@Entity
+@Table(name = "PACIENTES")
 @Getter
 @ToString(callSuper = true, exclude = {"hospital", "citas"})
-@EqualsAndHashCode(callSuper = true, exclude = {"hospital", "citas"})
 @SuperBuilder
+@NoArgsConstructor
 public class Paciente extends Persona implements Serializable {
 
-    private final HistoriaClinica historiaClinica;
-    private final String telefono;
-    private final String direccion;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Setter(AccessLevel.NONE)
+    @OneToOne(mappedBy = "PACIENTES", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private HistoriaClinica historiaClinica;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "TELEFONO", nullable = false, length = 30)
+    private String telefono;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "DIRECCION", nullable = false, length = 200)
+    private String direccion;
+
+    // Hago uso del metodo helper setHospital --> no genero setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
     private Hospital hospital;
 
-    private final List<Cita> citas;
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "PACIENTES", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    private  List<Cita> citas;
 
-    public Paciente(String nombre, String apellido, String dni, LocalDate fechaNacimiento,
-                    TipoSangre tipoSangre, String telefono, String direccion) {
-        super(nombre, apellido, dni, fechaNacimiento, tipoSangre);
-        this.telefono = validarString(telefono, "El teléfono no puede ser nulo ni vacío");
-        this.direccion = validarString(direccion, "La dirección no puede ser nula ni vacía");
-        this.historiaClinica = new HistoriaClinica(this);
+    protected Paciente(PacienteBuilder<?, ?> builder) {
+        super(builder);
+        this.telefono = validarString(builder.telefono, "El teléfono no puede ser nulo ni vacío");
+        this.direccion = validarString(builder.direccion, "La dirección no puede ser nula ni vacía");
         this.citas = new ArrayList<>();
+        this.historiaClinica = HistoriaClinica.builder()
+                .paciente(this)
+                .build();
+    }
+
+    public static abstract class PacienteBuilder<C extends Paciente, B extends PacienteBuilder<C, B>> extends PersonaBuilder<C, B> {
+        private String telefono;
+        private String direccion;
+
+        public B telefono(String telefono) {
+            this.telefono = telefono;
+            return self();
+        }
+
+        public B direccion(String direccion) {
+            this.direccion = direccion;
+            return self();
+        }
     }
 
     public void setHospital(Hospital hospital) {
@@ -41,10 +78,12 @@ public class Paciente extends Persona implements Serializable {
     }
 
     public void addCita(Cita cita) {
+
         this.citas.add(cita);
     }
 
     public List<Cita> getCitas() {
+
         return Collections.unmodifiableList(new ArrayList<>(citas));
     }
 
