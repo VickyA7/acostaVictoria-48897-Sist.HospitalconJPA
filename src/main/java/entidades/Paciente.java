@@ -20,7 +20,7 @@ public class Paciente extends Persona implements Serializable {
     private Long id;
 
     @Setter(AccessLevel.NONE)
-    @OneToOne(mappedBy = "PACIENTES", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private HistoriaClinica historiaClinica;
 
     @Setter(AccessLevel.NONE)
@@ -37,7 +37,7 @@ public class Paciente extends Persona implements Serializable {
     private Hospital hospital;
 
     @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "PACIENTES", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "paciente", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private  List<Cita> citas;
 
     protected Paciente(PacienteBuilder<?, ?> builder) {

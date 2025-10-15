@@ -10,15 +10,15 @@
 
         <!-- Esta parte de las entidades es lo q nos interesa, es como que ests cargando las entidades en base de datos-->
         <!-- Entidades de mi sistema -->
-        <class>org.example.entidades.Persona</class>
-        <class>org.example.entidades.Paciente</class>
-        <class>org.example.entidades.Medico</class>
-        <class>org.example.entidades.Hospital</class>
-        <class>org.example.entidades.Departamento</class>
-        <class>org.example.entidades.Sala</class>
-        <class>org.example.entidades.Cita</class>
-        <class>org.example.entidades.HistoriaClinica</class>
-        <class>org.example.entidades.Matricula</class>
+        <class>entidades.Persona</class>
+        <class>entidades.Paciente</class>
+        <class>entidades.Medico</class>
+        <class>entidades.Hospital</class>
+        <class>entidades.Departamento</class>
+        <class>entidades.Sala</class>
+        <class>entidades.Cita</class>
+        <class>entidades.HistoriaClinica</class>
+        <class>entidades.Matricula</class>
 
 
         <properties>

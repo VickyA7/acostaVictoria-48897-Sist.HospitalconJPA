@@ -33,11 +33,11 @@ public class Departamento implements Serializable {
     private Hospital hospital;
 
     @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "DEPARTAMENTOS", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Medico> medicos;
 
     @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "DEPARTAMENTOS", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Sala> salas;
 
 //CONSTRUCTOR DEPARTAMENTO

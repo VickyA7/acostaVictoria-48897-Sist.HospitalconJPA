@@ -37,7 +37,7 @@ public class Medico extends Persona implements Serializable {
     private Departamento departamento;
 
     @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "MEDICO", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "medico", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<Cita> citas;
 
 

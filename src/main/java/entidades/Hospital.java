@@ -13,7 +13,7 @@ import java.util.*;
 public class Hospital implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idHosp")
     private Long id;
 
@@ -30,11 +30,11 @@ public class Hospital implements Serializable {
     private String telefono;
 
     @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "HOSPITAL", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Departamento> departamentos = new ArrayList<>();
 
     @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "HOSPITAL", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Paciente> pacientes = new ArrayList<>();
 
     @Builder
