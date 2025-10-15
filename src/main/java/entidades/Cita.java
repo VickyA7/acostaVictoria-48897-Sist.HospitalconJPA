@@ -164,7 +164,7 @@ public class Cita implements Serializable {
             if (medico == null) throw new CitaException("Médico no encontrado: " + dniMedico);
             if (sala == null) throw new CitaException("Sala no encontrada: " + numeroSala);
 
-            // 🔹 Validaciones igual que en programarCita
+            //Validaciones igual que en programarCita
             if (fechaHora.isBefore(LocalDateTime.now())) {
                 throw new CitaException("No se puede cargar una cita con fecha en el pasado: " + fechaHora);
             }

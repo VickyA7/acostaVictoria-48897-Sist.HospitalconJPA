@@ -1,5 +1,8 @@
 package entidades;
 
+import lombok.Getter;
+
+@Getter
 public enum EspecialidadMedica {
     CARDIOLOGIA("Cardiología"),
     NEUROLOGIA("Neurología"),
@@ -17,11 +20,9 @@ public enum EspecialidadMedica {
     private final String descripcion;
 
     EspecialidadMedica(String descripcion) {
+
         this.descripcion = descripcion;
     }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
 }
 
